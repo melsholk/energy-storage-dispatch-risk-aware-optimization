@@ -1,0 +1,21 @@
+# data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# notebooks
+.ipynb_checkpoints/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# outputs
+results/*
+figures/*
+!results/.gitkeep
+!figures/.gitkeep
