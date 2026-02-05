@@ -1,4 +1,4 @@
-# Grid-Scale Battery Dispatch Under Price Uncertainty (PJM) — Scenario Optimization + CVaR
+# Grid-Scale Battery Dispatch Under Price Uncertainty (PJM) Scenario Optimization + CVaR
 
 This repo demonstrates a workflow for **grid-scale battery dispatch** using **real PJM real-time hourly LMPs** (Western Hub).  
 It starts with a deterministic linear program (LP) baseline and then adds **scenario-based uncertainty** and **risk aversion** via **CVaR** to produce an explicit **risk–reward efficient frontier**.
