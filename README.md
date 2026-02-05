@@ -1,16 +1,24 @@
-# Grid-Scale Battery Dispatch Under Price Uncertainty (PJM) Scenario Optimization + CVaR
+# Risk-Aware Optimization of Grid-Scale Battery Dispatch
 
-This repo demonstrates a workflow for **grid-scale battery dispatch** using **real PJM real-time hourly LMPs** (Western Hub).  
-It starts with a deterministic linear program (LP) baseline and then adds **scenario-based uncertainty** and **risk aversion** via **CVaR** to produce an explicit **risk–reward efficient frontier**.
+This project models grid-scale battery dispatch under uncertain electricity prices using scenario-based stochastic optimization and CVaR risk aversion.
 
-## What this project shows
-- Mathematical modeling of intertemporal energy storage constraints (SOC dynamics, power/energy limits, efficiency)
-- Scenario analysis using historical price paths
-- Risk-aware optimization (CVaR) implemented as a **linear program**
-- Practical Python implementation with **Pyomo + HiGHS**
-- Clear decision insights (expected value vs downside protection)
+## Problem
 
-## Battery base case
+Grid-scale battery operators must decide how to charge and discharge energy storage assets under highly volatile electricity prices. 
+While deterministic optimization maximizes expected arbitrage revenue, it can expose operators to severe downside risk when prices deviate from forecasts.
+
+This project studies how risk-aware optimization changes battery dispatch decisions and quantifies the tradeoff between expected value and downside protection.
+
+## Modeling Approach
+
+- Hourly real-time electricity prices from the PJM wholesale market
+- **Linear optimization** model with intertemporal state-of-charge constraints
+- **Scenario-based stochastic** programming using historical price samples
+- Conditional Value-at-Risk (**CVaR**) to model downside risk aversion
+- Implemented in Python using **Pyomo** and the **HiGHS** solver
+
+
+## Assummed Battery base case
 - Power rating: **50 MW**
 - Energy capacity: **200 MWh** (4-hour duration)
 - Round-trip efficiency: **90%**
@@ -21,33 +29,36 @@ Export PJM **Data Miner 2 → Real-Time Hourly LMPs** for:
 - `Pricing Node Name`: **WESTERN HUB**
 - Hourly timestamps (EPT)
 
-Save the CSV to:
-`data/raw/pjm_rt_hourly_western_hub_2025Q1.csv`
+## Key Result: Efficient Frontier Between Value and Risk
 
-The notebooks expect at least these columns:
-- `datetime_beginning_ept`
-- `total_lmp_rt`
+![Efficient Frontier](figures/efficient_frontier.png)
 
-## Quickstart
+The figure shows the efficient frontier between expected arbitrage revenue and worst-case performance.
+Deterministic optimization achieves the highest expected value but exposes the system to large downside losses.
+Introducing CVaR risk aversion dramatically improves worst-case outcomes with only modest reductions in mean revenue.
+Beyond moderate risk aversion, additional downside protection exhibits diminishing returns.
 
-```bash
-pip install -r requirements.txt
-```
+| Policy | Mean Revenue | Worst Case | Std Dev |
+|------|-------------|------------|---------|
+| Deterministic | High | Very Negative | High |
+| CVaR (λ = 0.1) | Slightly Lower | Positive | Lower |
+| CVaR (λ = 1.0) | Moderate | Strongly Positive | Lower |
 
-Run notebooks in order:
-1. `notebooks/01_data_and_deterministic_dispatch.ipynb`
-2. `notebooks/02_scenarios_and_cvar_dispatch.ipynb`
+## Takeaways
 
-## Notebooks
-- **01 — Data + deterministic dispatch**: validates the LP and produces interpretable dispatch/SOC plots.
-- **02 — Scenarios + CVaR**: builds **K=20** historical scenarios and solves EV vs **CVaR** plans; plots the efficient frontier.
+- Deterministic optimization implicitly selects a high-risk operating policy
+- Expected-value stochastic optimization alone does not change dispatch decisions in linear models
+- CVaR risk aversion enables explicit control of downside risk
+- Most downside protection is achieved with moderate risk aversion
 
-## Key takeaway
-Deterministic dispatch can maximize expected revenue while quietly accepting substantial tail risk.  
-CVaR risk aversion provides a tunable knob (λ) to trade a small reduction in expected value for large improvements in worst-case outcomes.
+## Repository Structure
 
-## Repo layout
-- `src/` reusable model/data utilities
-- `notebooks/` end-to-end analysis and plots
-- `data/` (input data; not tracked)
-- `results/`, `figures/` (optional outputs)
+- notebooks/01_data_and_deterministic_dispatch.ipynb  
+- notebooks/02_scenarios_and_cvar_dispatch.ipynb  
+- src/ – reusable optimization and evaluation code  
+
+## How to Run
+
+1. Install dependencies: `pip install -r requirements.txt`
+2. Place PJM price CSV in `data/raw/`
+3. Run notebooks in order
