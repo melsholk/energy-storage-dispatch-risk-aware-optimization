@@ -1,6 +1,6 @@
 # Grid-Scale Battery Dispatch Under Price Uncertainty (PJM) — Scenario Optimization + CVaR
 
-This repo demonstrates an applied operations research workflow for **grid-scale battery dispatch** using **real PJM real-time hourly LMPs** (Western Hub).  
+This repo demonstrates a workflow for **grid-scale battery dispatch** using **real PJM real-time hourly LMPs** (Western Hub).  
 It starts with a deterministic linear program (LP) baseline and then adds **scenario-based uncertainty** and **risk aversion** via **CVaR** to produce an explicit **risk–reward efficient frontier**.
 
 ## What this project shows
@@ -42,7 +42,7 @@ Run notebooks in order:
 - **01 — Data + deterministic dispatch**: validates the LP and produces interpretable dispatch/SOC plots.
 - **02 — Scenarios + CVaR**: builds **K=20** historical scenarios and solves EV vs **CVaR** plans; plots the efficient frontier.
 
-## Key takeaway (what an operator would do)
+## Key takeaway
 Deterministic dispatch can maximize expected revenue while quietly accepting substantial tail risk.  
 CVaR risk aversion provides a tunable knob (λ) to trade a small reduction in expected value for large improvements in worst-case outcomes.
 
@@ -51,6 +51,3 @@ CVaR risk aversion provides a tunable knob (λ) to trade a small reduction in ex
 - `notebooks/` end-to-end analysis and plots
 - `data/` (input data; not tracked)
 - `results/`, `figures/` (optional outputs)
-
-## License
-MIT (feel free to reuse with attribution).
